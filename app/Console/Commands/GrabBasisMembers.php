@@ -41,13 +41,15 @@ class GrabBasisMembers extends Command
         $basisUrl = 'http://www.basis.org.bd/index.php/members_area/member_list/';
 
         $maxLimit = 1040;
-        $minLimit = 0
+        $minLimit = 0;
 
         $dom = new Dom();
         $dom->setOptions([
             'cleanupInput' => true, // Set a global option to enable strict html parsing.
         ]);
 
+
+        $counter = 0;
         while ($minLimit<$maxLimit)
         {
             $dom->loadFromUrl($basisUrl.$minLimit);
@@ -56,15 +58,30 @@ class GrabBasisMembers extends Command
 
             foreach ($htmls as $html)
             {
-                foreach ($html->find('a') as $company)
+                $companies = $html->find('a');
+                $completedCompany = '';
+
+                foreach ($companies as $company)
                 {
 
-                    $this->info($company->text);
-                    $this->info($company->href);
+                    $validLink = $company->find('b');
+                    if(count($validLink))
+                    {
+
+
+
+                        $counter++;
+                        $this->info('Completd - '.$validLink->text);
+
+
+                    }
+
+
+
                 }
 
+                $this->info($counter);
 
-                $this->info('');
 
 
             }

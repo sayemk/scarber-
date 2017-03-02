@@ -11,6 +11,7 @@ class GrabBasisMembers extends Command
 {
 
     protected $basis_id;
+    protected $c_member_id;
     protected $c_name;
     protected $c_establishment;
     protected $c_address;
@@ -57,10 +58,10 @@ class GrabBasisMembers extends Command
         $basisUrl = 'http://www.basis.org.bd/index.php/members_area/member_list/';
 
         $maxLimit = 1040;
-        $minLimit = 600;
+        $minLimit = 0;
         $neededInfo = [
                         'Company Name','Year of establishment','Address','Contact No.','E-mail','Company website',
-                        'Name','Designation','Mobile'
+                        'Name','Designation','Mobile','BASIS Membership No.',
                 ];
 
         $dom = new Dom();
@@ -69,7 +70,7 @@ class GrabBasisMembers extends Command
         ]);
 
 
-        $counter = 0;
+        $counter = $minLimit;
         while ($minLimit<=$maxLimit)
         {
             $dom->loadFromUrl($basisUrl.$minLimit);
@@ -164,6 +165,9 @@ class GrabBasisMembers extends Command
                                         case 'Mobile':
                                             $this->cc_mobile = $font->text;
                                             break;
+                                        case 'BASIS Membership No.':
+                                            $this->c_member_id = $font->text;
+                                            break;
                                         default:
                                             $this->info($font->text);
                                             break;
@@ -180,7 +184,7 @@ class GrabBasisMembers extends Command
 
                         $this->save();
                         $counter++;
-                        $this->info('Completd - '.$validLink->text);
+                        $this->info('Completd - '.$validLink->text.' ID-'.$this->basis_id);
 
                         //exit();
 
@@ -207,6 +211,7 @@ class GrabBasisMembers extends Command
         try {
             $member = new Member();
             $member->basis_id = $this->basis_id;
+            $member->c_member_id = $this->c_member_id;
             $member->c_name = $this->c_name;
             $member->c_establishment = $this->c_establishment;
             $member->c_address = $this->c_address;

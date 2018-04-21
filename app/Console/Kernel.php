@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\GrabBasisMembers::class,
+        Commands\ScarbeMedicine::class,
     ];
 
     /**
